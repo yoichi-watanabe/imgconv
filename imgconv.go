@@ -62,6 +62,7 @@ func Convert() error {
 	return nil
 }
 
+// 拡張子を外したファイル名を返却
 func getFileNameWithoutExt(path string) string {
 	return filepath.Base(path[:len(path)-len(filepath.Ext(path))])
 }
