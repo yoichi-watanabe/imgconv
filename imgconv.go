@@ -4,7 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"image"
-	_ "image/jpeg"
+	"image/gif"
+	"image/jpeg"
 	"image/png"
 	"os"
 	"path/filepath"
@@ -13,9 +14,9 @@ import (
 func Convert() {
 	// 処理
 	var (
-		dir  = flag.String("dir", "./", "Message")
-		src  = flag.String("src", ".jpg", "Message")
-		dest = flag.String("dest", "./testdata/dest.png", "Message")
+		//dir  = flag.String("dir", "./", "Message")
+		src  = flag.String("s", "jpg", "Message")
+		dest = flag.String("d", "png", "Message")
 	)
 
 	// オプションのパース
@@ -25,9 +26,7 @@ func Convert() {
 	fmt.Println(filepath.Ext(path))
 
 	// 対象拡張子のファイルを抽出
-	if filepath.Ext(path) == *src {
-		fmt.Println(path)
-		fmt.Println("MATCH")
+	if filepath.Ext(path) == fmt.Sprintf(".%s", *src) {
 
 		// 対象ファイルオープン
 		file, err := os.Open(path)
@@ -42,15 +41,23 @@ func Convert() {
 			fmt.Println(err)
 		}
 
-		// エンコード
-		out, err := os.Create(*dest)
+		out, err := os.Create(getFileNameWithoutExt(path) + fmt.Sprintf(".%s", *dest))
 		defer out.Close()
 
-		png.Encode(out, img)
+		// 変換後拡張子に応じたエンコード
+		switch *dest {
+		case "jpg", "jpeg":
+			jpeg.Encode(out, img, nil)
+
+		case "png":
+			png.Encode(out, img)
+
+		case "gif":
+			gif.Encode(out, img, nil)
+		}
 	}
+}
 
-	fmt.Printf("param -dir -> %s\n", *dir)
-	fmt.Printf("src -src -> %s\n", *src)
-	fmt.Printf("dits -dest -> %s\n", *dest)
-
+func getFileNameWithoutExt(path string) string {
+	return filepath.Base(path[:len(path)-len(filepath.Ext(path))])
 }

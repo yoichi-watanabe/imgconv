@@ -13,7 +13,6 @@ func main() {
 
 // execute関数
 func Run(args []string) int {
-
 	imgconv.Convert()
 	return 0
 }
