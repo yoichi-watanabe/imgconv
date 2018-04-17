@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"image"
+	"image/gif"
 	"image/jpeg"
 	"image/png"
 	"os"
@@ -13,6 +14,7 @@ import (
 
 //Convert はオプションで指定された拡張子へ画像ファイルを変換する関数
 func Convert(args []string) error {
+
 	var (
 		targetdir = flag.String("t", "./", "Message")
 		src       = flag.String("s", "jpg", "Message")
@@ -22,10 +24,12 @@ func Convert(args []string) error {
 	// オプションのパース
 	flag.Parse()
 
+	// ログ出力
+	fmt.Println(fmt.Sprintf("%s配下の拡張子を変換します。 %s → %s", *targetdir, *src, *dest))
+
 	// 対象拡張子のファイルを抽出
 	err := filepath.Walk(*targetdir, func(path string, info os.FileInfo, err error) error {
 		if filepath.Ext(path) == fmt.Sprintf(".%s", *src) {
-			// 処理
 			// 対象ファイルオープン
 			file, err := os.Open(path)
 			defer file.Close()
@@ -50,6 +54,9 @@ func Convert(args []string) error {
 
 			case "png":
 				png.Encode(out, img)
+
+			case "gif":
+				gif.Encode(out, img, nil)
 			}
 
 			fmt.Println(getFileNameWithoutExt(path) + fmt.Sprintf(".%s", *dest) + " を出力しました")
