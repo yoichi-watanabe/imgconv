@@ -1,8 +1,10 @@
+// Package main はimgconvコマンドのエントリーポイント
 package main
 
 import (
 	"os"
 
+	// 自作パッケージ
 	"github.com/yoichi-watanabe/imgconv"
 )
 
@@ -11,8 +13,8 @@ func main() {
 	os.Exit(Run(os.Args))
 }
 
-// execute関数
+// Run はmainパッケージのexecute関数
 func Run(args []string) int {
-	imgconv.Convert()
+	imgconv.Convert(args)
 	return 0
 }

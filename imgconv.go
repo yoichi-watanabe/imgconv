@@ -1,3 +1,4 @@
+// Package imgconv は画像ファイル形式変換処理を実行するパッケージ
 package imgconv
 
 import (
@@ -11,7 +12,7 @@ import (
 )
 
 //Convert はオプションで指定された拡張子へ画像ファイルを変換する関数
-func Convert() error {
+func Convert(args []string) error {
 	var (
 		targetdir = flag.String("t", "./", "Message")
 		src       = flag.String("s", "jpg", "Message")
@@ -62,7 +63,7 @@ func Convert() error {
 	return nil
 }
 
-// 拡張子を外したファイル名を返却
+// getFileNameWithoutExt は拡張子を外したファイル名を返却する関数
 func getFileNameWithoutExt(path string) string {
 	return filepath.Base(path[:len(path)-len(filepath.Ext(path))])
 }
