@@ -25,3 +25,7 @@
 - -s 変換前画像形式(デフォルト:jpg)
 - -d 変換後画像形式(デフォルト:png)
 - -t 変換対象ディレクトリ(デフォルト:./)
+
+---
+## github
+https://github.com/yoichi-watanabe/imgconv
