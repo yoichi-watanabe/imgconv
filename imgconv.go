@@ -12,24 +12,30 @@ import (
 	"path/filepath"
 )
 
+// Cmdoption はコマンド実行時に設定されたオプションを持つ構造体
+type Cmdoption struct {
+	targetdir *string
+	src       *string
+	dest      *string
+}
+
 //Convert はオプションで指定された拡張子へ画像ファイルを変換する関数
 func Convert(args []string) error {
 
-	var (
-		targetdir = flag.String("t", "./", "Message")
-		src       = flag.String("s", "jpg", "Message")
-		dest      = flag.String("d", "png", "Message")
-	)
+	c := Cmdoption{
+		flag.String("t", "./", "Message"),
+		flag.String("s", "jpg", "Message"),
+		flag.String("d", "png", "Message")}
 
 	// オプションのパース
 	flag.Parse()
 
 	// ログ出力
-	fmt.Println(fmt.Sprintf("%s配下の拡張子を変換します。 %s → %s", *targetdir, *src, *dest))
+	fmt.Println(fmt.Sprintf("%s配下の拡張子を変換します。 %s → %s", *c.targetdir, *c.src, *c.dest))
 
 	// 対象拡張子のファイルを抽出
-	err := filepath.Walk(*targetdir, func(path string, info os.FileInfo, err error) error {
-		if filepath.Ext(path) == fmt.Sprintf(".%s", *src) {
+	err := filepath.Walk(*c.targetdir, func(path string, info os.FileInfo, err error) error {
+		if filepath.Ext(path) == fmt.Sprintf(".%s", *c.src) {
 			// 対象ファイルオープン
 			file, err := os.Open(path)
 			defer file.Close()
@@ -43,12 +49,12 @@ func Convert(args []string) error {
 				fmt.Println(err)
 			}
 
-			fmt.Println(getFileNameWithoutExt(path) + fmt.Sprintf(".%s", *dest) + " を出力します")
-			out, err := os.Create(getFileNameWithoutExt(path) + fmt.Sprintf(".%s", *dest))
+			fmt.Println(getFileNameWithoutExt(path) + fmt.Sprintf(".%s", *c.dest) + " を出力します")
+			out, err := os.Create(getFileNameWithoutExt(path) + fmt.Sprintf(".%s", *c.dest))
 			defer out.Close()
 
 			// 変換後拡張子に応じたエンコード
-			switch *dest {
+			switch *c.dest {
 			case "jpg", "jpeg":
 				jpeg.Encode(out, img, nil)
 
@@ -59,7 +65,7 @@ func Convert(args []string) error {
 				gif.Encode(out, img, nil)
 			}
 
-			fmt.Println(getFileNameWithoutExt(path) + fmt.Sprintf(".%s", *dest) + " を出力しました")
+			fmt.Println(getFileNameWithoutExt(path) + fmt.Sprintf(".%s", *c.dest) + " を出力しました")
 
 		}
 		return nil
